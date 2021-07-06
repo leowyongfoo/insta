@@ -23,10 +23,21 @@ class PostsController extends Controller
             'caption'=>'required',
             'image'=>['required','image'],
         ]);
+        
+        $imagePath=request('image')->store('uploads','public');
 
-        auth()->user()->posts()->create($data);
+        auth()->user()->posts()->create([
+            'caption'=>$data['caption'],
+            'image'=>$imagePath,
 
-        dd(request()->all());
+        ]);
+
+        return redirect('/profile/'.auth()->user()->id);
+    }
+
+    public function show(\App\Models\Post $post)
+    {
+        return view('posts.show', compact('post'));
     }
 
 }
