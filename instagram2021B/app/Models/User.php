@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Notification;
 
 class User extends Authenticatable
 {
@@ -42,9 +43,28 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function($user) {
+            $user->profile()->create([
+                'title'=> $user->username,
+            ]);
+
+            Notification::route('mail', $user->email)->notify(new \App\Notifications\NewUserMail($user->email));
+
+        });
+    }
+
     public function posts()
     {
         return $this->hasMany(Post::class)->orderBy('created_at','DESC');
+    }
+
+    public function following()
+    {
+        return $this->belongsToMany(Profile::class);
     }
 
     public function profile()
