@@ -44,7 +44,7 @@ class NewUserMail extends Notification
                     ->line('Welcome New user!')
                     ->line('Thank you for using our application!, we would like to having your feedback')
                     ->line('please provide your precious feedback for us at LYFDev@gmail.com')
-                    ->action('Feedback', url('/'))
+                    ->action('Back to application', url('/'))
                     ->line('From:LYFDev.SDN.BHD');
     }
 
